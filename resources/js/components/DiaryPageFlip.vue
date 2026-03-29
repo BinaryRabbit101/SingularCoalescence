@@ -1,0 +1,206 @@
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+
+interface DiaryEntry {
+    id: number;
+    entry_number: number;
+    title: string;
+    content: string;
+    entry_date?: string;
+    published: boolean;
+}
+
+const props = defineProps<{
+    entries: DiaryEntry[];
+}>();
+
+const currentIndex = ref(0);
+const flipClass = ref('');
+const isAnimating = ref(false);
+
+const currentEntry = computed(() => props.entries[currentIndex.value]);
+const total = computed(() => props.entries.length);
+
+function formatDate(dateStr?: string): string {
+    if (!dateStr) return '';
+    return new Date(dateStr).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
+
+function formatEntryNumber(num: number): string {
+    return `#${String(num).padStart(3, '0')}`;
+}
+
+function navigate(direction: 'next' | 'prev') {
+    if (isAnimating.value) return;
+    if (direction === 'next' && currentIndex.value >= total.value - 1) return;
+    if (direction === 'prev' && currentIndex.value <= 0) return;
+
+    isAnimating.value = true;
+    const outClass = direction === 'next' ? 'page-flip-out' : 'page-flip-out-reverse';
+    const inClass  = direction === 'next' ? 'page-flip-in'  : 'page-flip-in-reverse';
+
+    flipClass.value = outClass;
+
+    setTimeout(() => {
+        currentIndex.value += direction === 'next' ? 1 : -1;
+        flipClass.value = inClass;
+
+        setTimeout(() => {
+            flipClass.value = '';
+            isAnimating.value = false;
+        }, 300);
+    }, 290);
+}
+
+function onKeyDown(e: KeyboardEvent) {
+    if (e.key === 'ArrowRight') navigate('next');
+    if (e.key === 'ArrowLeft') navigate('prev');
+}
+
+onMounted(() => window.addEventListener('keydown', onKeyDown));
+onUnmounted(() => window.removeEventListener('keydown', onKeyDown));
+</script>
+
+<template>
+    <div class="w-full max-w-2xl mx-auto select-none">
+
+        <!-- Empty state -->
+        <div v-if="!total" class="text-center py-20" style="color: #4b5563;">
+            No diary entries yet.
+        </div>
+
+        <template v-else>
+            <!-- Page -->
+            <div
+                :class="['rounded-xl overflow-hidden shadow-2xl transition-shadow duration-300', flipClass]"
+                style="
+                    background: linear-gradient(160deg, #13111a 0%, #0f0d16 100%);
+                    border: 1px solid rgba(139,92,246,0.25);
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(139,92,246,0.08);
+                    transform-origin: center center;
+                "
+            >
+                <!-- Page header -->
+                <div class="px-8 pt-5 pb-4 border-b"
+                     style="border-color: rgba(255,255,255,0.06); background: rgba(139,92,246,0.04);">
+                    <!-- Top navigation -->
+                    <div class="flex items-center justify-between mb-4">
+                        <button
+                            @click="navigate('prev')"
+                            :disabled="currentIndex === 0 || isAnimating"
+                            class="flex items-center gap-1.5 text-xs tracking-widest uppercase transition-all duration-200 px-3 py-1.5 rounded-lg border"
+                            :style="currentIndex === 0
+                                ? 'opacity: 0.2; color: #6b7280; border-color: rgba(255,255,255,0.06); cursor: not-allowed;'
+                                : 'color: #a78bfa; border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.06);'"
+                        >
+                            ‹ Prev
+                        </button>
+                        <span class="text-xs font-mono" style="color: #4b5563;">{{ currentIndex + 1 }} / {{ total }}</span>
+                        <button
+                            @click="navigate('next')"
+                            :disabled="currentIndex === total - 1 || isAnimating"
+                            class="flex items-center gap-1.5 text-xs tracking-widest uppercase transition-all duration-200 px-3 py-1.5 rounded-lg border"
+                            :style="currentIndex === total - 1
+                                ? 'opacity: 0.2; color: #6b7280; border-color: rgba(255,255,255,0.06); cursor: not-allowed;'
+                                : 'color: #a78bfa; border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.06);'"
+                        >
+                            Next ›
+                        </button>
+                    </div>
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <span class="text-xs font-mono tracking-widest" style="color: #8b5cf6;">
+                                {{ formatEntryNumber(currentEntry.entry_number) }}
+                            </span>
+                            <h2 class="text-lg font-semibold mt-1 leading-snug" style="color: #e8e8f0;">
+                                {{ currentEntry.title }}
+                            </h2>
+                            <p v-if="currentEntry.entry_date" class="text-xs mt-1" style="color: #6b7280;">
+                                {{ formatDate(currentEntry.entry_date) }}
+                            </p>
+                        </div>
+                        <!-- Decorative corner mark -->
+                        <div class="flex-shrink-0 text-2xl opacity-20 mt-1" style="color: #8b5cf6;">✦</div>
+                    </div>
+                </div>
+
+                <!-- Ruled lines background + content -->
+                <div
+                    class="px-8 py-6 min-h-72"
+                    style="
+                        background-image: repeating-linear-gradient(
+                            to bottom,
+                            transparent,
+                            transparent 27px,
+                            rgba(139,92,246,0.06) 27px,
+                            rgba(139,92,246,0.06) 28px
+                        );
+                        background-attachment: local;
+                    "
+                >
+                    <div
+                        class="text-sm leading-7 whitespace-pre-wrap font-mono"
+                        style="color: #c4c4d4; line-height: 28px;"
+                    >{{ currentEntry.content }}</div>
+                </div>
+
+                <!-- Page footer / navigation -->
+                <div class="px-8 py-5 border-t flex items-center justify-between"
+                     style="border-color: rgba(255,255,255,0.06); background: rgba(0,0,0,0.15);">
+
+                    <!-- Prev -->
+                    <button
+                        @click="navigate('prev')"
+                        :disabled="currentIndex === 0 || isAnimating"
+                        class="flex items-center gap-2 text-xs tracking-widest uppercase transition-all duration-200 px-4 py-2 rounded-lg border"
+                        :style="currentIndex === 0
+                            ? 'opacity: 0.2; color: #6b7280; border-color: rgba(255,255,255,0.06); cursor: not-allowed;'
+                            : 'color: #a78bfa; border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.06);'"
+                    >
+                        ‹ Prev
+                    </button>
+
+                    <!-- Counter -->
+                    <div class="text-center">
+                        <span class="text-xs font-mono" style="color: #6b7280;">
+                            {{ currentIndex + 1 }} / {{ total }}
+                        </span>
+                        <!-- Dot indicators (up to 7) -->
+                        <div class="flex items-center justify-center gap-1 mt-1.5">
+                            <div
+                                v-for="i in Math.min(total, 7)"
+                                :key="i"
+                                class="rounded-full transition-all duration-300"
+                                :style="(i - 1) === currentIndex
+                                    ? 'width: 16px; height: 4px; background: #8b5cf6;'
+                                    : 'width: 4px; height: 4px; background: rgba(255,255,255,0.15);'"
+                            ></div>
+                            <span v-if="total > 7" class="text-xs ml-1" style="color: #4b5563;">…</span>
+                        </div>
+                    </div>
+
+                    <!-- Next -->
+                    <button
+                        @click="navigate('next')"
+                        :disabled="currentIndex === total - 1 || isAnimating"
+                        class="flex items-center gap-2 text-xs tracking-widest uppercase transition-all duration-200 px-4 py-2 rounded-lg border"
+                        :style="currentIndex === total - 1
+                            ? 'opacity: 0.2; color: #6b7280; border-color: rgba(255,255,255,0.06); cursor: not-allowed;'
+                            : 'color: #a78bfa; border-color: rgba(139,92,246,0.3); background: rgba(139,92,246,0.06);'"
+                    >
+                        Next ›
+                    </button>
+                </div>
+            </div>
+
+            <!-- Keyboard hint -->
+            <p class="text-center text-xs mt-4" style="color: #374151;">
+                ← → arrow keys to navigate
+            </p>
+        </template>
+    </div>
+</template>
