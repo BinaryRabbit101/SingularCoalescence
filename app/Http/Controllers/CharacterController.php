@@ -12,7 +12,7 @@ class CharacterController extends Controller
     {
         $characters = Character::where('published', true)
             ->orderBy('sort_order')
-            ->get(['id', 'slug', 'name', 'tagline', 'profile_image', 'action_image', 'body_name', 'body_hair_color']);
+            ->get(['id', 'slug', 'name', 'tagline', 'profile_image', 'action_image']);
 
         return Inertia::render('Characters/Index', [
             'characters' => $characters,

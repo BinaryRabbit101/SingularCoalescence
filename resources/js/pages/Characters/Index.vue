@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 
@@ -11,13 +12,19 @@ interface Character {
     tagline?: string;
     profile_image?: string;
     action_image?: string;
-    body_name?: string;
-    body_hair_color?: string;
 }
 
 defineProps<{
     characters: Character[];
 }>();
+
+const activeId = ref<number | null>(null);
+
+function handleTouch(id: number, event: TouchEvent) {
+    if (activeId.value === id) return; // allow link navigation on second tap
+    event.preventDefault();
+    activeId.value = id;
+}
 </script>
 
 <template>
@@ -48,6 +55,7 @@ defineProps<{
                     style="border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);"
                     onmouseenter="this.style.borderColor='rgba(139,92,246,0.3)'; this.style.transform='translateY(-2px)'"
                     onmouseleave="this.style.borderColor='rgba(255,255,255,0.08)'; this.style.transform=''"
+                    @touchstart="handleTouch(character.id, $event)"
                 >
                     <!-- Portrait -->
                     <div class="aspect-[3/4] relative overflow-hidden"
@@ -55,11 +63,12 @@ defineProps<{
                         <img v-if="character.profile_image"
                              :src="`/storage/${character.profile_image}`"
                              class="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-500"
-                             :class="character.action_image ? 'opacity-100 group-hover:opacity-0' : 'opacity-80 group-hover:opacity-100'"
+                             :class="character.action_image ? (activeId === character.id ? 'opacity-0' : 'opacity-100 group-hover:opacity-0') : 'opacity-80 group-hover:opacity-100'"
                              :alt="character.name" />
                         <img v-if="character.action_image"
                              :src="`/storage/${character.action_image}`"
-                             class="absolute inset-0 w-full h-full object-cover object-top opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                             class="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-500"
+                             :class="activeId === character.id ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'"
                              :alt="`${character.name} action`" />
                         <div class="absolute inset-x-0 bottom-0 h-12"
                              style="background: linear-gradient(to top, rgba(10,10,15,0.9), transparent);"></div>

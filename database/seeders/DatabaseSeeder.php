@@ -12,12 +12,14 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'Admin',
-            'email' => 'admin@example.com',
+            'email' => 'email@example.com',
         ]);
 
         $this->call([
-            CharacterSeeder::class,
-            FelixNyxaraSeeder::class,
+            CharlotteSeeder::class,
+            NyxaraSeeder::class,
+            FelixSeeder::class,
+            LiamSeeder::class,
         ]);
     }
 }

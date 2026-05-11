@@ -12,8 +12,6 @@ class Character extends Model
         'name',
         'tagline',
         'description',
-        'body_name',
-        'body_hair_color',
         'profile_image',
         'action_image',
         'action_image_prompt',

@@ -31,8 +31,6 @@ interface Character {
     slug: string;
     tagline?: string;
     description?: string;
-    body_name?: string;
-    body_hair_color?: string;
     profile_image?: string;
     action_image?: string;
     traits?: string[];

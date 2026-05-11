@@ -8,8 +8,6 @@ interface Character {
     name: string;
     tagline?: string;
     description?: string;
-    body_name?: string;
-    body_hair_color?: string;
     profile_image?: string;
     action_image?: string;
     action_image_prompt?: string;
@@ -85,8 +83,6 @@ const form = useForm({
     name: props.character?.name ?? '',
     tagline: props.character?.tagline ?? '',
     description: props.character?.description ?? '',
-    body_name: props.character?.body_name ?? '',
-    body_hair_color: props.character?.body_hair_color ?? '',
     traits: (props.character?.traits ?? []).join('\n'),
     abilities: (props.character?.abilities ?? []).join('\n'),
     cons: (props.character?.cons ?? []).join('\n'),
@@ -193,25 +189,6 @@ function onActionImage(e: Event) {
                         <textarea v-model="form.description" rows="5"
                                   class="w-full rounded border px-3 py-2 text-sm focus:outline-none resize-none"
                                   style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); color: #e8e8f0;"></textarea>
-                    </div>
-                </div>
-
-                <!-- Body info -->
-                <div class="rounded-xl border p-6" style="border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.02);">
-                    <h2 class="text-xs tracking-widest uppercase mb-4" style="color: #8b5cf6;">Body</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs mb-1.5" style="color: #9ca3af;">Name</label>
-                            <input v-model="form.body_name" type="text" placeholder="Eclipse"
-                                   class="w-full rounded border px-3 py-2 text-sm focus:outline-none"
-                                   style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); color: #e8e8f0;" />
-                        </div>
-                        <div>
-                            <label class="block text-xs mb-1.5" style="color: #9ca3af;">Hair Color</label>
-                            <input v-model="form.body_hair_color" type="text" placeholder="Purple"
-                                   class="w-full rounded border px-3 py-2 text-sm focus:outline-none"
-                                   style="background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.1); color: #e8e8f0;" />
-                        </div>
                     </div>
                 </div>
 
