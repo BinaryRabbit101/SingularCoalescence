@@ -14,7 +14,7 @@ class BaasilSeeder extends Seeder
             [
                 'name' => 'Baasil',
                 'tagline' => 'The Curator. He calls everything he keeps a friend.',
-                'description' => "Baasil, known as the Curator, is a collector. For centuries he has gathered the rarest and most fleeting things in the galaxy aboard his flagship, the Menagerie: a museum of white marble and gold, drifting in the dark with cheerful music playing in its empty halls.\n\nHe is tall, horned and pale as porcelain, draped in white and gold with a fleece cape and a ring on every finger, and he rarely walks when he can float in on his throne. He is warm, polite and theatrical. He calls his exhibits \"my friends.\"\n\nHe believes he is preserving them. He has never come across anything quite like Charlotte.",
+                'description' => "Baasil, known as the Curator, is a collector. For centuries he has gathered the rarest and most fleeting things in the galaxy aboard his flagship, the Menagerie: a museum of white marble and gold, drifting in the dark with cheerful music playing in its empty halls.\n\nHe is big, old and pompous: grey-skinned and goat-horned, with a woolly head of hair and a tuft of beard on his chin, draped in white and gold with a fleece cape and a ring on every finger. He is warm, polite and theatrical. He calls his exhibits \"my friends.\"\n\nHe believes he is preserving them. He has never come across anything quite like Charlotte.",
                 'traits' => [
                     'Theatrical',
                     'Mockingly polite',
