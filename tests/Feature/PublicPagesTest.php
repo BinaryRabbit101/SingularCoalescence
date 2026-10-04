@@ -24,6 +24,15 @@ test('public pages render', function (string $url) {
     '/products',
 ]);
 
+test('charlotte has five published undated diary entries', function () {
+    $entries = Character::where('slug', 'charlotte')->firstOrFail()
+        ->diaryEntries()->orderBy('entry_number')->get();
+
+    expect($entries)->toHaveCount(5)
+        ->and($entries->first()->title)->toBe('Hundreds of Light Years')
+        ->and($entries->every(fn ($e) => $e->published === true && $e->entry_date === null))->toBeTrue();
+});
+
 test('the retired character is gone', function () {
     $this->get('/characters/felix')->assertNotFound();
 });
