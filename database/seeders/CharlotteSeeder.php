@@ -87,7 +87,7 @@ class CharlotteSeeder extends Seeder
                     'slug' => Str::slug($entry['title']),
                     'content' => $entry['content'],
                     'entry_date' => $entry['entry_date'],
-                    'published' => true,
+                    'published' => false, // old-canon entries, hidden until the rewrite lands
                 ]
             );
         }

@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
     Storage::fake('public');
+    // Keep the repo's real art out of the tests; each test points at its own fixture.
+    config(['story.art_path' => sys_get_temp_dir().'/sc-art-none']);
     $this->seed(StorySeeder::class);
 });
 
