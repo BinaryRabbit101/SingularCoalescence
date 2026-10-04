@@ -42,4 +42,12 @@ tar never deletes, so a file removed from the repo stays on the servers until re
   (not the mini-PC's; no user had 2FA, so nothing depended on the old key), sqlite,
   database sessions/cache/queue, secure cookies, `MAIL_MAILER=log`, daily logs at warning.
 - No queue worker and no scheduler cron (the app needs neither yet).
-- **Not backed up yet.** Lifeboat on the droplet covers only Kitchen.
+- **Backups (Lifeboat, since 2026-10-04):** the droplet's 03:00 cron (as `deploy`) snapshots
+  `database/database.sqlite` nightly to
+  `/var/backups/lifeboat/droplet-singularcoalescence/droplet-singularcoalescence-YYYYMMDD.sqlite.gz`
+  (7 days there), and keeps **one current** `droplet-singularcoalescence-uploads.tar.gz` of
+  `storage/app/public`, rebuilt only when the files change. Uploads have no history: a bad
+  upload replaces the good copy the next night. The mini-PC pulls both at 03:30, and this PC's
+  `MiniPC_PullBackups` pulls them into `C:\Users\binar\Documents\backups\minipc\droplet-singularcoalescence\`
+  (30 daily DB copies + 12 monthly). **`.env` (this copy's own `APP_KEY`) is NOT backed up**:
+  Lifeboat has no encrypted `.env` backup yet.
