@@ -12,31 +12,32 @@ class LiamSeeder extends Seeder
         Character::updateOrCreate(
             ['slug' => 'liam'],
             [
-                'name'        => 'Liam',
-                'tagline'     => '',
-                'description' => "Liam is a human native of the planet Cairn. He serves as the *variable* in Charlotte's otherwise predictable universe. Though ostensibly a simple farmhand, he possesses an innate, intuitive connection to machinery that defies conventional logic or formal education.\n\nRaised in the deeply traditional and superstitious village of Oakhaven, he spent his free time building overly complex contraptions to automate his chores — which usually failed spectacularly. When Charlotte arrived, he was the only one who saw the mechanical principles behind her seemingly magical technology. He left everything behind to join her crew and finally reach the stars he had spent his whole life staring at.",
-                'traits'      => [
-                    'Deeply curious and endlessly optimistic',
-                    'Fiercely loyal to those he trusts',
-                    'Operates on intuition rather than calculation',
-                    'Natural affinity for the "rhythm" of machines',
-                    'Recklessly brave',
-                    'Dreams far beyond his origins',
+                'name' => 'Liam',
+                'tagline' => 'A farm boy with his father\'s wrench and a sky he can\'t stop staring at.',
+                'description' => "Liam grew up in a snowbound village that fears the machines sleeping out on the forbidden plains. His father refused to fear them, walked out among them one night, and never came back. What he left behind was a wrench built for giants.\n\nLiam carries it strapped to his back, talks to objects when nobody is listening, and is the only person in this story who still thinks the stars are beautiful. He is not a fighter. He is a farmer, a good pair of hands, and a long way out of his depth.\n\nHe is also the one thing Charlotte did not see coming.",
+                'traits' => [
+                    'Wonder he refuses to be embarrassed by',
+                    'Talks to machines, buckets and well levers',
+                    'Apologises to everyone, and to everything',
+                    'Notices more than he lets on',
+                    'Afraid, and keeps moving anyway',
+                    'Quietly stubborn',
                 ],
-                'abilities'   => [
-                    'The Knack — understands and repairs machines through emotional connection, not engineering knowledge',
-                    'Probability Defiance — solves problems in ways that shouldn\'t mathematically work',
-                    'Unpredictability — the only entity whose next action Charlotte cannot calculate',
-                    'Resourceful improvisation — his Junk Bag of scraps becomes surprisingly effective tools',
+                'abilities' => [
+                    'Fixes things by gut, not calculation, and is as surprised as anyone when it works',
+                    'His father\'s wrench: two-handed, polished to a mirror, never out of reach',
+                    'A satchel of odds and ends',
+                    'A steady pair of hands at the controls',
+                    'Reads people the way he reads machines',
                 ],
-                'cons'        => [
-                    'Reckless curiosity — "pull the wire and see what happens" puts the team in immediate danger',
-                    'Lack of formal knowledge — doesn\'t understand the physics behind what he does',
-                    'Mortal fragility — a regular human easily injured in galactic-scale conflicts',
-                    'Overconfidence in gut feelings — sometimes the gut is just wrong',
+                'cons' => [
+                    'Not a fighter',
+                    'Comes from a world of wells and spinning wheels',
+                    'Panics the moment the wrench leaves his back',
+                    'Trusts too easily',
                 ],
-                'sort_order'  => 3,
-                'published'   => true,
+                'sort_order' => 1,
+                'published' => true,
             ]
         );
     }
