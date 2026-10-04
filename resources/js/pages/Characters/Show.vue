@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 
@@ -40,9 +40,23 @@ interface Character {
     music_tracks: MusicTrack[];
 }
 
-defineProps<{
+const props = defineProps<{
     character: Character;
 }>();
+
+const tabs = computed(() => {
+    const list: ['about' | 'diary' | 'music', string][] = [['about', 'About']];
+
+    if (props.character.diary_entries.length) {
+        list.push(['diary', 'Diary']);
+    }
+
+    if (props.character.music_tracks.length) {
+        list.push(['music', 'Music']);
+    }
+
+    return list;
+});
 
 const activeTab = ref<'about' | 'diary' | 'music'>('about');
 </script>
@@ -92,10 +106,10 @@ const activeTab = ref<'about' | 'diary' | 'music'>('about');
         </section>
 
         <!-- Tab navigation -->
-        <div class="sticky top-16 z-30 border-b" style="background: rgba(10,10,15,0.95); border-color: rgba(255,255,255,0.08); backdrop-filter: blur(12px);">
-            <div class="max-w-7xl mx-auto px-6 flex gap-0">
+        <div v-if="tabs.length > 1" class="sticky top-16 z-30 border-b" style="background: rgba(10,10,15,0.95); border-color: rgba(255,255,255,0.08); backdrop-filter: blur(12px);">
+            <div class="max-w-7xl mx-auto px-6 flex gap-0 overflow-x-auto">
                 <button
-                    v-for="tab in [['about', 'About'], ['diary', 'Diary'], ['music', 'Music']]"
+                    v-for="tab in tabs"
                     :key="tab[0]"
                     @click="activeTab = tab[0] as 'about' | 'diary' | 'music'"
                     class="relative px-6 py-4 text-sm tracking-widest uppercase transition-all duration-200 group"
@@ -225,7 +239,7 @@ const activeTab = ref<'about' | 'diary' | 'music'>('about');
             <div v-if="activeTab === 'music'" class="animate-tab-fade">
                 <div class="max-w-2xl">
                     <p class="text-sm mb-8" style="color: #6b7280;">
-                        The soundtrack to Charlotte's existence.
+                        The soundtrack to {{ character.name }}'s existence.
                     </p>
                     <div v-if="character.music_tracks.length">
                         <AudioPlayer :tracks="character.music_tracks" />

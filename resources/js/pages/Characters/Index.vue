@@ -46,7 +46,7 @@ function handleTouch(id: number, event: TouchEvent) {
             </div>
 
             <!-- Characters grid -->
-            <div v-else class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <div v-else class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
                 <Link
                     v-for="character in characters"
                     :key="character.id"
@@ -63,7 +63,7 @@ function handleTouch(id: number, event: TouchEvent) {
                         <img v-if="character.profile_image"
                              :src="`/storage/${character.profile_image}`"
                              class="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-500"
-                             :class="character.action_image ? (activeId === character.id ? 'opacity-0' : 'opacity-100 group-hover:opacity-0') : 'opacity-80 group-hover:opacity-100'"
+                             :class="character.action_image ? (activeId === character.id ? 'opacity-0' : 'opacity-100 group-hover:opacity-0') : 'opacity-100'"
                              :alt="character.name" />
                         <img v-if="character.action_image"
                              :src="`/storage/${character.action_image}`"

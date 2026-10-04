@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Link, usePage } from '@inertiajs/vue3';
+import { ref } from 'vue';
 import MusicBar from '@/components/MusicBar.vue';
 import { useAudioPlayer } from '@/composables/useAudioPlayer';
 
 const page = usePage();
 const user = page.props.auth?.user;
 const audioStore = useAudioPlayer();
+const menuOpen = ref(false);
 
 const navLinks = [
     { label: 'Characters', href: '/characters' },
@@ -25,7 +27,7 @@ const navLinks = [
                 <Link href="/" class="flex items-center gap-3 group">
                     <div class="w-8 h-8 rounded-full flex-shrink-0 animate-glow-pulse"
                          style="background: linear-gradient(135deg, #8b5cf6 0%, #f97316 100%);"></div>
-                    <span class="font-bold text-sm tracking-widest uppercase" style="letter-spacing: 0.15em;">
+                    <span class="font-bold text-xs sm:text-sm tracking-widest uppercase" style="letter-spacing: 0.15em;">
                         <span style="background: linear-gradient(90deg, #8b5cf6, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Singular Coalescence</span>
                     </span>
                 </Link>
@@ -50,20 +52,43 @@ const navLinks = [
                 <!-- Auth -->
                 <div class="flex items-center gap-3">
                     <Link v-if="user" href="/admin"
-                          class="text-xs tracking-widest uppercase px-4 py-2 rounded border transition-colors duration-200"
+                          class="hidden sm:inline-block text-xs tracking-widest uppercase px-4 py-2 rounded border transition-colors duration-200"
                           style="border-color: #8b5cf6; color: #8b5cf6;"
                           onmouseenter="this.style.background='rgba(139,92,246,0.1)'"
                           onmouseleave="this.style.background='transparent'"
                     >
                         Admin
                     </Link>
-                    <Link v-else href="/login"
-                          class="text-xs tracking-widest uppercase px-4 py-2 rounded border transition-colors duration-200"
-                          style="border-color: rgba(255,255,255,0.2); color: #9ca3af;"
+
+                    <button type="button"
+                            class="md:hidden w-10 h-10 flex items-center justify-center rounded border"
+                            style="border-color: rgba(255,255,255,0.2); color: #9ca3af;"
+                            :aria-expanded="menuOpen"
+                            aria-controls="mobile-menu"
+                            aria-label="Toggle menu"
+                            @click="menuOpen = !menuOpen"
                     >
-                        Login
-                    </Link>
+                        <svg v-if="!menuOpen" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+                        <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
+                    </button>
                 </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div v-if="menuOpen" id="mobile-menu" class="md:hidden border-t border-white/10 px-6 py-3 flex flex-col" style="background: rgba(10,10,15,0.97);">
+                <Link
+                    v-for="link in navLinks"
+                    :key="link.href"
+                    :href="link.href"
+                    class="py-3 text-sm tracking-wider uppercase"
+                    style="color: #9ca3af;"
+                    @click="menuOpen = false"
+                >
+                    {{ link.label }}
+                </Link>
+                <Link v-if="user" href="/admin" class="py-3 text-sm tracking-wider uppercase" style="color: #8b5cf6;" @click="menuOpen = false">
+                    Admin
+                </Link>
             </div>
         </nav>
 
@@ -79,7 +104,7 @@ const navLinks = [
                     <div class="w-5 h-5 rounded-full flex-shrink-0" style="background: linear-gradient(135deg, #8b5cf6 0%, #f97316 100%);"></div>
                     <span class="text-xs tracking-widest uppercase" style="color: #6b7280;">Singular Coalescence</span>
                 </div>
-                <div class="flex items-center gap-6">
+                <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
                     <Link v-for="link in navLinks" :key="link.href" :href="link.href"
                           class="text-xs tracking-wider uppercase transition-colors"
                           style="color: #4b5563;"

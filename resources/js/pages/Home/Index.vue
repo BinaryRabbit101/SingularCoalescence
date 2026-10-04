@@ -15,6 +15,7 @@ interface Character {
 
 defineProps<{
     characters: Character[];
+    banner?: string | null;
 }>();
 </script>
 
@@ -22,7 +23,7 @@ defineProps<{
     <Head title="Singular Coalescence" />
 
         <!-- Hero -->
-        <section class="relative min-h-screen flex items-center justify-center overflow-hidden">
+        <section class="relative flex items-center justify-center overflow-hidden py-32 md:py-44">
             <!-- Background gradient -->
             <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 60% at 20% 50%, rgba(139,92,246,0.15) 0%, transparent 60%), radial-gradient(ellipse 80% 60% at 80% 50%, rgba(249,115,22,0.12) 0%, transparent 60%), #0a0a0f;"></div>
 
@@ -37,7 +38,7 @@ defineProps<{
             <div class="relative z-10 text-center max-w-4xl mx-auto px-6">
                 <p class="text-xs tracking-widest uppercase mb-6 font-mono" style="color: #8b5cf6;">A sci-fi novel</p>
 
-                <h1 class="text-6xl md:text-8xl font-bold tracking-tight mb-6" style="line-height: 1.05;">
+                <h1 class="text-5xl sm:text-6xl md:text-8xl font-bold tracking-tight mb-6" style="line-height: 1.05;">
                     <span style="background: linear-gradient(90deg, #8b5cf6, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Singular</span><br />
                     <span style="background: linear-gradient(90deg, #8b5cf6, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Coalescence</span>
                 </h1>
@@ -63,9 +64,15 @@ defineProps<{
                 </div>
             </div>
 
-            <!-- Scroll indicator -->
-            <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-                <div class="w-px h-8" style="background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.2));"></div>
+        </section>
+
+        <!-- Storytime banner -->
+        <section v-if="banner" class="px-6 pb-4">
+            <div class="max-w-7xl mx-auto">
+                <img :src="`/storage/${banner}`"
+                     class="w-full aspect-[21/9] object-cover rounded-xl border"
+                     style="border-color: rgba(255,255,255,0.08);"
+                     alt="The cast gathered around Liam as he reads them a story" />
             </div>
         </section>
 
@@ -76,7 +83,7 @@ defineProps<{
                     <p class="text-xs tracking-widest uppercase mb-2" style="color: #8b5cf6;">Characters</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 md:gap-6">
                     <Link
                         v-for="character in characters"
                         :key="character.id"
@@ -92,7 +99,7 @@ defineProps<{
                             <img v-if="character.profile_image"
                                  :src="`/storage/${character.profile_image}`"
                                  class="absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-500"
-                                 :class="character.action_image ? 'opacity-100 group-hover:opacity-0' : 'mix-blend-luminosity group-hover:mix-blend-normal'"
+                                 :class="character.action_image ? 'opacity-100 group-hover:opacity-0' : ''"
                                  :alt="character.name" />
                             <img v-if="character.action_image"
                                  :src="`/storage/${character.action_image}`"
