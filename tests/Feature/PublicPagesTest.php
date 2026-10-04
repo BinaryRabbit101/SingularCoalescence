@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Character;
+use App\Models\Novel;
 use Database\Seeders\StorySeeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -49,8 +50,10 @@ test('the seeder publishes art and is idempotent', function () {
     $dir = sys_get_temp_dir().'/sc-art-'.uniqid();
     mkdir("{$dir}/characters", 0777, true);
     mkdir("{$dir}/banner", 0777, true);
+    mkdir("{$dir}/novel", 0777, true);
     file_put_contents("{$dir}/characters/liam.webp", 'liam-art');
     file_put_contents("{$dir}/banner/storytime.webp", 'banner-art');
+    file_put_contents("{$dir}/novel/cover.webp", 'cover-art');
     config(['story.art_path' => $dir]);
 
     Character::where('slug', 'charlotte')->update(['profile_image' => 'old/charlotte.png']);
@@ -65,4 +68,6 @@ test('the seeder publishes art and is idempotent', function () {
     Storage::disk('public')->assertExists('banner/storytime.webp');
     expect(Storage::disk('public')->get('characters/liam.webp'))->toBe('liam-art');
     Storage::disk('public')->assertMissing('characters/charlotte.webp');
+    expect(Storage::disk('public')->get('novel/cover.webp'))->toBe('cover-art')
+        ->and(Novel::getSingleton()->cover_image)->toBe('novel/cover.webp');
 });

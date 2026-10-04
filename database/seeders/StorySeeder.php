@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Character;
+use App\Models\Novel;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Storage;
 
@@ -62,6 +63,13 @@ class StorySeeder extends Seeder
 
         if (is_file($banner)) {
             $disk->put('banner/storytime.webp', file_get_contents($banner));
+        }
+
+        $cover = "{$root}/novel/cover.webp";
+
+        if (is_file($cover)) {
+            $disk->put('novel/cover.webp', file_get_contents($cover));
+            Novel::getSingleton()->update(['cover_image' => 'novel/cover.webp']);
         }
     }
 }
