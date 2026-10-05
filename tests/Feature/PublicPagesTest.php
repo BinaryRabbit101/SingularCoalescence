@@ -39,24 +39,43 @@ test('the retired character is gone', function () {
 });
 
 test('home shows only the banners whose art exists', function () {
+    config(['story.banners' => [
+        ['file' => 'one.webp', 'alt' => 'First'],
+        ['file' => 'two.webp', 'alt' => 'Second'],
+    ]]);
+
     $this->get('/')->assertInertia(fn ($page) => $page->has('banners', 0));
 
+    Storage::disk('public')->put('banner/two.webp', 'x');
+
+    $this->get('/')->assertInertia(fn ($page) => $page
+        ->has('banners', 1)
+        ->where('banners.0.src', fn ($src) => str_starts_with($src, 'banner/two.webp?v='))
+        ->where('banners.0.alt', 'Second'));
+});
+
+test('home banners follow the configured slide order', function () {
+    config(['story.banners' => [
+        ['file' => 'one.webp', 'alt' => 'First'],
+        ['file' => 'two.webp', 'alt' => 'Second'],
+    ]]);
+    Storage::disk('public')->put('banner/two.webp', 'x');
+    Storage::disk('public')->put('banner/one.webp', 'x');
+
+    $this->get('/')->assertInertia(fn ($page) => $page
+        ->has('banners', 2)
+        ->where('banners.0.src', fn ($src) => str_starts_with($src, 'banner/one.webp?v='))
+        ->where('banners.1.src', fn ($src) => str_starts_with($src, 'banner/two.webp?v=')));
+});
+
+test('home shows only the storytime banner for now', function () {
+    // Movie Night is painted but left out of the carousel (owner, 2026-10-05).
+    Storage::disk('public')->put('banner/storytime.webp', 'x');
     Storage::disk('public')->put('banner/movienight.webp', 'x');
 
     $this->get('/')->assertInertia(fn ($page) => $page
         ->has('banners', 1)
-        ->where('banners.0.src', fn ($src) => str_starts_with($src, 'banner/movienight.webp?v='))
-        ->where('banners.0.alt', fn ($alt) => $alt !== ''));
-});
-
-test('home banners follow the configured slide order', function () {
-    Storage::disk('public')->put('banner/movienight.webp', 'x');
-    Storage::disk('public')->put('banner/storytime.webp', 'x');
-
-    $this->get('/')->assertInertia(fn ($page) => $page
-        ->has('banners', 2)
-        ->where('banners.0.src', fn ($src) => str_starts_with($src, 'banner/storytime.webp?v='))
-        ->where('banners.1.src', fn ($src) => str_starts_with($src, 'banner/movienight.webp?v=')));
+        ->where('banners.0.src', fn ($src) => str_starts_with($src, 'banner/storytime.webp?v=')));
 });
 
 test('the novel cover url busts the cache once the art exists', function () {
@@ -90,8 +109,9 @@ test('the seeder publishes art and is idempotent', function () {
     expect($liam->profile_image)->toBe('characters/liam.webp')
         ->and($liam->action_image)->toBeNull();
     Storage::disk('public')->assertExists('characters/liam.webp');
-    Storage::disk('public')->assertExists('banner/storytime.webp');
-    expect(Storage::disk('public')->get('banner/movienight.webp'))->toBe('movie-art');
+    expect(Storage::disk('public')->get('banner/storytime.webp'))->toBe('banner-art');
+    // Only the banners listed in config('story.banners') are published.
+    Storage::disk('public')->assertMissing('banner/movienight.webp');
     expect(Storage::disk('public')->get('characters/liam.webp'))->toBe('liam-art');
     Storage::disk('public')->assertMissing('characters/charlotte.webp');
     expect(Storage::disk('public')->get('novel/cover.webp'))->toBe('cover-art')
