@@ -46,6 +46,17 @@ test('home has no banner until the art exists', function () {
     $this->get('/')->assertInertia(fn ($page) => $page->where('banner', fn ($banner) => str_starts_with($banner, 'banner/storytime.webp?v=')));
 });
 
+test('the novel cover url busts the cache once the art exists', function () {
+    Novel::getSingleton()->update(['cover_image' => 'novel/cover.webp']);
+
+    $this->get('/novel')->assertInertia(fn ($page) => $page->where('novel.cover_image', 'novel/cover.webp'));
+
+    Storage::disk('public')->put('novel/cover.webp', 'x');
+
+    $this->get('/novel')->assertInertia(fn ($page) => $page->where('novel.cover_image', fn ($cover) => str_starts_with($cover, 'novel/cover.webp?v=')));
+    expect(Novel::getSingleton()->cover_image)->toBe('novel/cover.webp');
+});
+
 test('the seeder publishes art and is idempotent', function () {
     $dir = sys_get_temp_dir().'/sc-art-'.uniqid();
     mkdir("{$dir}/characters", 0777, true);

@@ -16,7 +16,7 @@ class NyxaraSeeder extends Seeder
             [
                 'name' => 'Nyxara',
                 'tagline' => 'The last of the Sol-Vari. Seven feet of quiet.',
-                'description' => "Nyxara is a Sol-Vari warrior: seven feet of shaggy black fur, bright orange eyes that see in the dark, a grin full of fangs, and a prehensile tail strong enough to count as a fifth limb. She is the last of her kind.\n\nShe was once a guard among her own people and, by night, a hunter the villagers knew only as a shadow in the trees. She learned to go unseen so well that she has never quite stopped.\n\nShe speaks rarely, in a low, halting rasp, and chooses each word as if it costs her. Watch the tail instead. It says what she won't.",
+                'description' => "Nyxara is a Sol-Vari warrior: seven athletic feet of thick, well-groomed black fur, bright orange eyes that glow in the dark, a wide grin full of fangs, and a very long, slim prehensile tail strong enough to count as a fifth limb. She is the last of her kind.\n\nShe was once a guard among her own people and, by night, a hunter the villagers knew only as a shadow in the trees. She learned to go unseen so well that she has never quite stopped.\n\nShe speaks rarely, in a low, halting rasp, and chooses each word as if it costs her. Watch the tail instead. It says what she won't.",
                 'traits' => [
                     'Stoic',
                     'Fiercely protective',
