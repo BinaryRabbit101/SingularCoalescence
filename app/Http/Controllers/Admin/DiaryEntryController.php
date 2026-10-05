@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Character;
 use App\Models\DiaryEntry;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -89,7 +88,7 @@ class DiaryEntryController extends Controller
     public function reorder(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'ids'   => 'required|array',
+            'ids' => 'required|array',
             'ids.*' => 'integer|exists:diary_entries,id',
         ]);
 

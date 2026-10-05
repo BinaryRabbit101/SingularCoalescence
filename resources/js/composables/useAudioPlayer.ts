@@ -13,7 +13,8 @@ export interface Track {
 // Created once at module init and never destroyed — survives layout changes,
 // Inertia navigations, and component unmounts. The audio continues playing
 // regardless of which page or layout is active.
-const _audio: HTMLAudioElement | null = typeof window !== 'undefined' ? new Audio() : null;
+const _audio: HTMLAudioElement | null =
+    typeof window !== 'undefined' ? new Audio() : null;
 
 // ─── Module-level reactive state ─────────────────────────────────────────────
 const tracks = ref<Track[]>([]);
@@ -30,7 +31,11 @@ let _isSeeking = false;
 // ─── Internal helpers ─────────────────────────────────────────────────────────
 function _load(index: number) {
     const track = tracks.value[index];
-    if (!track || !_audio) return;
+
+    if (!track || !_audio) {
+        return;
+    }
+
     currentIndex.value = index;
     currentTime.value = 0;
     _audio.src = '/stream/' + track.file_path;
@@ -39,7 +44,10 @@ function _load(index: number) {
 }
 
 function _playIndex(index: number) {
-    if (index < 0 || index >= tracks.value.length || !_audio) return;
+    if (index < 0 || index >= tracks.value.length || !_audio) {
+        return;
+    }
+
     started.value = true;
     _load(index);
     // Small delay mirrors the original 50ms timeout to allow load() to settle
@@ -53,24 +61,39 @@ if (_audio) {
     _audio.preload = 'auto';
 
     _audio.addEventListener('timeupdate', () => {
-        if (!_isSeeking && _audio) currentTime.value = _audio.currentTime;
+        if (!_isSeeking && _audio) {
+            currentTime.value = _audio.currentTime;
+        }
     });
     _audio.addEventListener('durationchange', () => {
-        if (_audio) duration.value = isFinite(_audio.duration) ? _audio.duration : 0;
+        if (_audio) {
+            duration.value = isFinite(_audio.duration) ? _audio.duration : 0;
+        }
     });
-    _audio.addEventListener('play', () => { playing.value = true; });
-    _audio.addEventListener('pause', () => { playing.value = false; });
+    _audio.addEventListener('play', () => {
+        playing.value = true;
+    });
+    _audio.addEventListener('pause', () => {
+        playing.value = false;
+    });
     _audio.addEventListener('ended', () => {
         // Guard: spurious 'ended' events fire when .load() resets the element.
-        if (!_audio || !(_audio.duration > 0)) return;
+        if (!_audio || !(_audio.duration > 0)) {
+            return;
+        }
+
         playing.value = false;
+
         if (currentIndex.value < tracks.value.length - 1) {
             _playIndex(currentIndex.value + 1);
         }
     });
     _audio.addEventListener('seeked', () => {
         // Seek completed — update currentTime with actual position and unblock timeupdate.
-        if (_audio) currentTime.value = _audio.currentTime;
+        if (_audio) {
+            currentTime.value = _audio.currentTime;
+        }
+
         _isSeeking = false;
     });
 }
@@ -81,11 +104,15 @@ export function useAudioPlayer() {
 
     /** Safe to call on page mount — no-op if something is currently playing. */
     function setTracks(newTracks: Track[]) {
-        if (playing.value) return;
+        if (playing.value) {
+            return;
+        }
+
         tracks.value = newTracks;
         currentIndex.value = 0;
         currentTime.value = 0;
         duration.value = 0;
+
         // Preload first track metadata so duration is visible before user presses play.
         if (_audio && newTracks[0] && !started.value) {
             _audio.src = '/stream/' + newTracks[0].file_path;
@@ -106,7 +133,10 @@ export function useAudioPlayer() {
     }
 
     function togglePlay() {
-        if (!_audio || !started.value) return;
+        if (!_audio || !started.value) {
+            return;
+        }
+
         if (playing.value) {
             _audio.pause();
         } else {
@@ -129,7 +159,10 @@ export function useAudioPlayer() {
     }
 
     function seekTo(time: number) {
-        if (!_audio || isNaN(time)) return;
+        if (!_audio || isNaN(time)) {
+            return;
+        }
+
         _isSeeking = true;
         currentTime.value = time; // Optimistic update for smooth display
         _audio.currentTime = time;
@@ -137,7 +170,10 @@ export function useAudioPlayer() {
 
     function setVolume(vol: number) {
         volume.value = vol;
-        if (_audio) _audio.volume = vol;
+
+        if (_audio) {
+            _audio.volume = vol;
+        }
     }
 
     /** Called by the X button — stops audio and hides the bar. */
@@ -146,6 +182,7 @@ export function useAudioPlayer() {
             _audio.pause();
             _audio.src = '';
         }
+
         playing.value = false;
         started.value = false;
         _isSeeking = false;

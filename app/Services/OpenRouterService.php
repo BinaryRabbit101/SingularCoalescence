@@ -89,16 +89,16 @@ class OpenRouterService
     public function generateImage(string $prompt, ?string $aspectRatio = '1:1'): ?string
     {
         $aspectHint = $aspectRatio ? " Aspect ratio: {$aspectRatio}." : '';
-        $noBorder   = ' Full bleed to all edges. No white border, no padding, no letterbox, no watermark, no text.';
+        $noBorder = ' Full bleed to all edges. No white border, no padding, no letterbox, no watermark, no text.';
 
         $response = Http::timeout(120)->withHeaders([
             'Authorization' => 'Bearer '.$this->token,
-            'Content-Type'  => 'application/json',
+            'Content-Type' => 'application/json',
         ])->post($this->baseUrl.'/chat/completions', [
-            'model'      => $this->imageModel,
-            'messages'   => [
+            'model' => $this->imageModel,
+            'messages' => [
                 [
-                    'role'    => 'user',
+                    'role' => 'user',
                     'content' => [
                         ['type' => 'text', 'text' => $prompt.$aspectHint.$noBorder],
                     ],
@@ -108,7 +108,7 @@ class OpenRouterService
         ]);
 
         if ($response->successful()) {
-            $json    = $response->json();
+            $json = $response->json();
             $message = $json['choices'][0]['message'] ?? [];
 
             // OpenRouter places generated images in message.images[]
@@ -139,7 +139,7 @@ class OpenRouterService
 
                     if ($type === 'image' || isset($part['inline_data'])) {
                         $inlineData = $part['inline_data'] ?? $part;
-                        $b64  = $inlineData['data'] ?? null;
+                        $b64 = $inlineData['data'] ?? null;
                         $mime = $inlineData['mime_type'] ?? 'image/png';
                         if ($b64) {
                             Log::info('OpenRouter image generated successfully (inline_data part)');
@@ -164,7 +164,7 @@ class OpenRouterService
 
         Log::error('OpenRouter image generation failed', [
             'status' => $response->status(),
-            'body'   => substr($response->body(), 0, 500),
+            'body' => substr($response->body(), 0, 500),
         ]);
 
         return null;

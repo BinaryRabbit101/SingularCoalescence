@@ -102,7 +102,7 @@ class MusicTrackController extends Controller
     public function reorder(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'ids'   => 'required|array',
+            'ids' => 'required|array',
             'ids.*' => 'integer|exists:music_tracks,id',
         ]);
 

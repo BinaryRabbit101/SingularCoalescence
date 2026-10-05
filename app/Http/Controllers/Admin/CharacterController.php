@@ -108,9 +108,9 @@ class CharacterController extends Controller
 
     public function generateProfile(Character $character, OpenRouterService $openRouter): JsonResponse
     {
-        $traits    = implode(', ', $character->traits ?? []);
+        $traits = implode(', ', $character->traits ?? []);
         $abilities = implode(', ', $character->abilities ?? []);
-        $cons      = implode(', ', $character->cons ?? []);
+        $cons = implode(', ', $character->cons ?? []);
 
         $prompt = <<<PROMPT
 Write a compelling 2-3 paragraph character profile for "{$character->name}" for the public website of a sci-fi story called "Singular Coalescence".
@@ -128,7 +128,7 @@ PROMPT;
 
         $result = $openRouter->chat($prompt, $system);
 
-        if (!$result) {
+        if (! $result) {
             return response()->json(['error' => 'OpenRouter did not return a response.'], 502);
         }
 
@@ -140,7 +140,7 @@ PROMPT;
         $prompt = $character->action_image_prompt;
 
         if (! $prompt) {
-            $traits    = implode(', ', $character->traits ?? []);
+            $traits = implode(', ', $character->traits ?? []);
             $abilities = implode(', ', $character->abilities ?? []);
             $prompt = "Cinematic sci-fi action shot of a character named \"{$character->name}\" from the story \"Singular Coalescence\". {$character->tagline}. Abilities: {$abilities}. Traits: {$traits}. Dynamic full-body or upper-body pose, dramatic lighting, dark sci-fi aesthetic, high detail, square format. No text, no watermarks.";
         }

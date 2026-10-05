@@ -11,9 +11,9 @@ use Illuminate\Support\Str;
 
 // Stream audio with Range-request support (php artisan serve lacks this for static files)
 Route::get('/stream/{path}', function (string $path) {
-    $fullPath = storage_path('app/public/' . $path);
+    $fullPath = storage_path('app/public/'.$path);
 
-    if (!file_exists($fullPath) || !Str::startsWith(realpath($fullPath), realpath(storage_path('app/public')))) {
+    if (! file_exists($fullPath) || ! Str::startsWith(realpath($fullPath), realpath(storage_path('app/public')))) {
         abort(404);
     }
 

@@ -29,7 +29,7 @@ class SetCharacterPortrait extends Command
 
         if (! Storage::disk('public')->exists($path)) {
             $this->error("File not found in public storage: {$path}");
-            $this->line('Tip: run <info>characters:generate-portraits ' . $slug . '</info> to generate a new portrait first.');
+            $this->line('Tip: run <info>characters:generate-portraits '.$slug.'</info> to generate a new portrait first.');
 
             return self::FAILURE;
         }

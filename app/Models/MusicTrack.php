@@ -29,11 +29,11 @@ class MusicTrack extends Model
 
     public function getFileUrlAttribute(): string
     {
-        return asset('storage/' . $this->file_path);
+        return asset('storage/'.$this->file_path);
     }
 
     public function getCoverUrlAttribute(): ?string
     {
-        return $this->cover_image ? asset('storage/' . $this->cover_image) : null;
+        return $this->cover_image ? asset('storage/'.$this->cover_image) : null;
     }
 }

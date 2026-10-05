@@ -19,6 +19,11 @@ declare module '@inertiajs/core' {
             name: string;
             auth: Auth;
             sidebarOpen: boolean;
+            // Shared by HandleInertiaRequests from the session.
+            flash: {
+                success: string | null;
+                error: string | null;
+            };
             [key: string]: unknown;
         };
     }
