@@ -16,10 +16,12 @@ class HomeController extends Controller
             ->get(['id', 'slug', 'name', 'tagline', 'profile_image', 'action_image']);
 
         $banner = 'banner/storytime.webp';
+        $disk = Storage::disk('public');
 
         return Inertia::render('Home/Index', [
             'characters' => $characters,
-            'banner' => Storage::disk('public')->exists($banner) ? $banner : null,
+            // The modified time busts Cloudflare's week-long cache when the art is replaced.
+            'banner' => $disk->exists($banner) ? $banner.'?v='.$disk->lastModified($banner) : null,
         ]);
     }
 }

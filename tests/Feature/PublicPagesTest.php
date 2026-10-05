@@ -43,7 +43,7 @@ test('home has no banner until the art exists', function () {
 
     Storage::disk('public')->put('banner/storytime.webp', 'x');
 
-    $this->get('/')->assertInertia(fn ($page) => $page->where('banner', 'banner/storytime.webp'));
+    $this->get('/')->assertInertia(fn ($page) => $page->where('banner', fn ($banner) => str_starts_with($banner, 'banner/storytime.webp?v=')));
 });
 
 test('the seeder publishes art and is idempotent', function () {
