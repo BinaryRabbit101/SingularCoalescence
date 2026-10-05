@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Head, Link } from '@inertiajs/vue3';
+import BannerCarousel from '@/components/BannerCarousel.vue';
 import PublicLayout from '@/layouts/PublicLayout.vue';
 
 defineOptions({ layout: PublicLayout });
@@ -15,7 +16,7 @@ interface Character {
 
 defineProps<{
     characters: Character[];
-    banner?: string | null;
+    banners: { src: string; alt: string }[];
 }>();
 </script>
 
@@ -23,9 +24,7 @@ defineProps<{
     <Head title="Singular Coalescence" />
 
     <!-- Hero -->
-    <section
-        class="relative flex items-center justify-center overflow-hidden py-32 md:py-44"
-    >
+    <section class="relative overflow-hidden px-6 pt-24 pb-6 md:pt-40 md:pb-10">
         <!-- Background gradient -->
         <div
             class="absolute inset-0"
@@ -74,7 +73,7 @@ defineProps<{
         ></div>
 
         <!-- Content -->
-        <div class="relative z-10 mx-auto max-w-4xl px-6 text-center">
+        <div class="relative z-10 mx-auto max-w-4xl text-center">
             <p
                 class="mb-6 font-mono text-xs tracking-widest uppercase"
                 style="color: #8b5cf6"
@@ -144,24 +143,19 @@ defineProps<{
                 </Link>
             </div>
         </div>
-    </section>
 
-    <!-- Storytime banner -->
-    <section v-if="banner" class="px-6 pb-4">
-        <div class="mx-auto max-w-7xl">
-            <img
-                :src="`/storage/${banner}`"
-                class="aspect-[21/9] w-full rounded-xl border object-cover"
-                style="border-color: rgba(255, 255, 255, 0.08)"
-                alt="The cast gathered around Liam as he reads them a story"
-            />
-        </div>
+        <!-- Story pictures -->
+        <BannerCarousel
+            v-if="banners.length"
+            :banners="banners"
+            class="relative z-10 mx-auto mt-10 max-w-7xl md:mt-16"
+        />
     </section>
 
     <!-- Characters preview -->
-    <section v-if="characters.length" class="px-6 py-24">
+    <section v-if="characters.length" class="px-6 pt-10 pb-24 md:pt-16">
         <div class="mx-auto max-w-7xl">
-            <div class="mb-12">
+            <div class="mb-8 md:mb-12">
                 <p
                     class="mb-2 text-xs tracking-widest uppercase"
                     style="color: #8b5cf6"

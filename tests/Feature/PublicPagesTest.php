@@ -38,12 +38,25 @@ test('the retired character is gone', function () {
     $this->get('/characters/felix')->assertNotFound();
 });
 
-test('home has no banner until the art exists', function () {
-    $this->get('/')->assertInertia(fn ($page) => $page->where('banner', null));
+test('home shows only the banners whose art exists', function () {
+    $this->get('/')->assertInertia(fn ($page) => $page->has('banners', 0));
 
+    Storage::disk('public')->put('banner/movienight.webp', 'x');
+
+    $this->get('/')->assertInertia(fn ($page) => $page
+        ->has('banners', 1)
+        ->where('banners.0.src', fn ($src) => str_starts_with($src, 'banner/movienight.webp?v='))
+        ->where('banners.0.alt', fn ($alt) => $alt !== ''));
+});
+
+test('home banners follow the configured slide order', function () {
+    Storage::disk('public')->put('banner/movienight.webp', 'x');
     Storage::disk('public')->put('banner/storytime.webp', 'x');
 
-    $this->get('/')->assertInertia(fn ($page) => $page->where('banner', fn ($banner) => str_starts_with($banner, 'banner/storytime.webp?v=')));
+    $this->get('/')->assertInertia(fn ($page) => $page
+        ->has('banners', 2)
+        ->where('banners.0.src', fn ($src) => str_starts_with($src, 'banner/storytime.webp?v='))
+        ->where('banners.1.src', fn ($src) => str_starts_with($src, 'banner/movienight.webp?v=')));
 });
 
 test('the novel cover url busts the cache once the art exists', function () {
@@ -64,6 +77,7 @@ test('the seeder publishes art and is idempotent', function () {
     mkdir("{$dir}/novel", 0777, true);
     file_put_contents("{$dir}/characters/liam.webp", 'liam-art');
     file_put_contents("{$dir}/banner/storytime.webp", 'banner-art');
+    file_put_contents("{$dir}/banner/movienight.webp", 'movie-art');
     file_put_contents("{$dir}/novel/cover.webp", 'cover-art');
     config(['story.art_path' => $dir]);
 
@@ -77,6 +91,7 @@ test('the seeder publishes art and is idempotent', function () {
         ->and($liam->action_image)->toBeNull();
     Storage::disk('public')->assertExists('characters/liam.webp');
     Storage::disk('public')->assertExists('banner/storytime.webp');
+    expect(Storage::disk('public')->get('banner/movienight.webp'))->toBe('movie-art');
     expect(Storage::disk('public')->get('characters/liam.webp'))->toBe('liam-art');
     Storage::disk('public')->assertMissing('characters/charlotte.webp');
     expect(Storage::disk('public')->get('novel/cover.webp'))->toBe('cover-art')

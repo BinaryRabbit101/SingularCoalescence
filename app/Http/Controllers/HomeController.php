@@ -15,13 +15,20 @@ class HomeController extends Controller
             ->orderBy('sort_order')
             ->get(['id', 'slug', 'name', 'tagline', 'profile_image', 'action_image']);
 
-        $banner = 'banner/storytime.webp';
         $disk = Storage::disk('public');
+
+        $banners = collect(config('story.banners'))
+            ->filter(fn (array $banner) => $disk->exists("banner/{$banner['file']}"))
+            ->map(fn (array $banner) => [
+                // The modified time busts Cloudflare's week-long cache when the art is replaced.
+                'src' => "banner/{$banner['file']}?v=".$disk->lastModified("banner/{$banner['file']}"),
+                'alt' => $banner['alt'],
+            ])
+            ->values();
 
         return Inertia::render('Home/Index', [
             'characters' => $characters,
-            // The modified time busts Cloudflare's week-long cache when the art is replaced.
-            'banner' => $disk->exists($banner) ? $banner.'?v='.$disk->lastModified($banner) : null,
+            'banners' => $banners,
         ]);
     }
 }

@@ -59,10 +59,12 @@ class StorySeeder extends Seeder
             ]);
         }
 
-        $banner = "{$root}/banner/storytime.webp";
+        foreach (config('story.banners') as $banner) {
+            $source = "{$root}/banner/{$banner['file']}";
 
-        if (is_file($banner)) {
-            $disk->put('banner/storytime.webp', file_get_contents($banner));
+            if (is_file($source)) {
+                $disk->put("banner/{$banner['file']}", file_get_contents($source));
+            }
         }
 
         $cover = "{$root}/novel/cover.webp";
