@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
 class Character extends Model
 {
@@ -28,6 +29,23 @@ class Character extends Model
         'cons' => 'array',
         'published' => 'boolean',
     ];
+
+    /**
+     * Append each image's modified time so a replaced portrait busts Cloudflare's
+     * week-long /storage cache. For display only; never save the result.
+     */
+    public function withImageVersions(): static
+    {
+        $disk = Storage::disk('public');
+
+        foreach (['profile_image', 'action_image'] as $field) {
+            if ($this->{$field} && $disk->exists($this->{$field})) {
+                $this->{$field} .= '?v='.$disk->lastModified($this->{$field});
+            }
+        }
+
+        return $this;
+    }
 
     public function diaryEntries(): HasMany
     {

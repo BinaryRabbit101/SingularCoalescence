@@ -89,6 +89,20 @@ test('the novel cover url busts the cache once the art exists', function () {
     expect(Novel::getSingleton()->cover_image)->toBe('novel/cover.webp');
 });
 
+test('character portrait urls bust the cache once the art exists', function () {
+    Character::where('slug', 'baasil')->update(['profile_image' => 'characters/baasil.webp']);
+
+    $this->get('/characters/baasil')->assertInertia(fn ($page) => $page->where('character.profile_image', 'characters/baasil.webp'));
+
+    Storage::disk('public')->put('characters/baasil.webp', 'x');
+    $busted = fn ($src) => str_starts_with($src, 'characters/baasil.webp?v=');
+
+    $this->get('/characters/baasil')->assertInertia(fn ($page) => $page->where('character.profile_image', $busted));
+    $this->get('/characters')->assertInertia(fn ($page) => $page->where('characters', fn ($all) => $busted(collect($all)->firstWhere('slug', 'baasil')['profile_image'])));
+    $this->get('/')->assertInertia(fn ($page) => $page->where('characters', fn ($all) => $busted(collect($all)->firstWhere('slug', 'baasil')['profile_image'])));
+    expect(Character::where('slug', 'baasil')->value('profile_image'))->toBe('characters/baasil.webp');
+});
+
 test('the seeder publishes art and is idempotent', function () {
     $dir = sys_get_temp_dir().'/sc-art-'.uniqid();
     mkdir("{$dir}/characters", 0777, true);

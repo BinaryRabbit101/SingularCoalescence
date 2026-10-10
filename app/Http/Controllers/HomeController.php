@@ -13,7 +13,8 @@ class HomeController extends Controller
     {
         $characters = Character::where('published', true)
             ->orderBy('sort_order')
-            ->get(['id', 'slug', 'name', 'tagline', 'profile_image', 'action_image']);
+            ->get(['id', 'slug', 'name', 'tagline', 'profile_image', 'action_image'])
+            ->each->withImageVersions();
 
         $disk = Storage::disk('public');
 
