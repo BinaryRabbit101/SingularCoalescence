@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class StorySeeder extends Seeder
 {
-    private const CHARACTER_SLUGS = ['charlotte', 'liam', 'nyxara', 'clyde', 'baasil'];
+    private const CHARACTER_SLUGS = ['charlotte', 'liam', 'nyxara', 'clyde', 'barnabas'];
 
     public function run(): void
     {
@@ -26,7 +26,7 @@ class StorySeeder extends Seeder
             LiamSeeder::class,
             NyxaraSeeder::class,
             ClydeSeeder::class,
-            BaasilSeeder::class,
+            BarnabasSeeder::class,
             UniverseSeeder::class,
             NovelSeeder::class,
         ]);

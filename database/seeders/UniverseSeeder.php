@@ -32,7 +32,7 @@ class UniverseSeeder extends Seeder
                 'category' => 'location',
                 'slug' => 'the-menagerie',
                 'name' => 'The Menagerie',
-                'description' => "Baasil's flagship: a museum the size of a city, built of white marble veined with gold, with cathedral ceilings and cheerful music playing to empty halls.\n\nIts galleries hold relics, moments frozen mid-happening, and living habitats behind one-way glass, where the exhibits do not know they are being watched.",
+                'description' => "Barnabas's flagship: a museum the size of a city, built of white marble veined with gold, with cathedral ceilings and cheerful music playing to empty halls.\n\nIts galleries hold relics, moments frozen mid-happening, and living habitats behind one-way glass, where the exhibits do not know they are being watched.",
             ],
             [
                 'category' => 'tech',

@@ -18,7 +18,7 @@ test('public pages render', function (string $url) {
     '/',
     '/characters',
     '/characters/charlotte',
-    '/characters/baasil',
+    '/characters/barnabas',
     '/novel',
     '/universe',
     '/universe/portal-discs',
@@ -90,17 +90,17 @@ test('the novel cover url busts the cache once the art exists', function () {
 });
 
 test('character portrait urls bust the cache once the art exists', function () {
-    Character::where('slug', 'baasil')->update(['profile_image' => 'characters/baasil.webp']);
+    Character::where('slug', 'barnabas')->update(['profile_image' => 'characters/barnabas.webp']);
 
-    $this->get('/characters/baasil')->assertInertia(fn ($page) => $page->where('character.profile_image', 'characters/baasil.webp'));
+    $this->get('/characters/barnabas')->assertInertia(fn ($page) => $page->where('character.profile_image', 'characters/barnabas.webp'));
 
-    Storage::disk('public')->put('characters/baasil.webp', 'x');
-    $busted = fn ($src) => str_starts_with($src, 'characters/baasil.webp?v=');
+    Storage::disk('public')->put('characters/barnabas.webp', 'x');
+    $busted = fn ($src) => str_starts_with($src, 'characters/barnabas.webp?v=');
 
-    $this->get('/characters/baasil')->assertInertia(fn ($page) => $page->where('character.profile_image', $busted));
-    $this->get('/characters')->assertInertia(fn ($page) => $page->where('characters', fn ($all) => $busted(collect($all)->firstWhere('slug', 'baasil')['profile_image'])));
-    $this->get('/')->assertInertia(fn ($page) => $page->where('characters', fn ($all) => $busted(collect($all)->firstWhere('slug', 'baasil')['profile_image'])));
-    expect(Character::where('slug', 'baasil')->value('profile_image'))->toBe('characters/baasil.webp');
+    $this->get('/characters/barnabas')->assertInertia(fn ($page) => $page->where('character.profile_image', $busted));
+    $this->get('/characters')->assertInertia(fn ($page) => $page->where('characters', fn ($all) => $busted(collect($all)->firstWhere('slug', 'barnabas')['profile_image'])));
+    $this->get('/')->assertInertia(fn ($page) => $page->where('characters', fn ($all) => $busted(collect($all)->firstWhere('slug', 'barnabas')['profile_image'])));
+    expect(Character::where('slug', 'barnabas')->value('profile_image'))->toBe('characters/barnabas.webp');
 });
 
 test('the seeder publishes art and is idempotent', function () {
